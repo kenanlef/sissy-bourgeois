@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     const session = event.data.object as Stripe.Checkout.Session;
     const orderId = session.metadata?.orderId;
     if (orderId) {
-      const address = session.shipping_details?.address;
+      const shippingDetails = (session as any).shipping_details; const address = shippingDetails?.address;
       await prisma.order.update({
         where:{id:orderId},
         data:{
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
           status:"PAID",
           shipping: session.total_details?.amount_shipping || 0,
           total: session.amount_total || undefined,
-          shippingName: session.shipping_details?.name || null,
+          shippingName: shippingDetails?.name || null,
           shippingLine1: address?.line1 || null,
           shippingLine2: address?.line2 || null,
           shippingCity: address?.city || null,

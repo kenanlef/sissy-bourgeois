@@ -1,11 +1,11 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useCart } from "./CartProvider";
 
-export function Header(){
+function HeaderContent(){
   const {count}=useCart();
   const params=useSearchParams();
   const lang=params.get("lang")||"en";
@@ -37,3 +37,8 @@ export function Header(){
     </header>
   </>
 }
+
+export function Header(){
+  return <Suspense fallback={null}><HeaderContent /></Suspense>
+}
+

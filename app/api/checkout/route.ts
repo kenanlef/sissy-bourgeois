@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       return { product, quantity };
     });
 
-    const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+    const subtotal = items.reduce((sum: number, item: { product: { price: number }; quantity: number }) => sum + item.product.price * item.quantity, 0);
     let discount = 0;
     let discountCode: string | null = null;
     if (body.discountCode) {
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
         customerName: body.customerName ? String(body.customerName) : null,
         phone: body.phone ? String(body.phone) : null,
         subtotal, discount, shipping, total, discountCode,
-        items: { create: items.map(item => ({ productId:item.product.id, name:item.product.name, price:item.product.price, quantity:item.quantity, image:item.product.image })) }
+        items: { create: items.map((item: { product: { id: string; name: string; price: number; image: string | null }; quantity: number }) => ({ productId:item.product.id, name:item.product.name, price:item.product.price, quantity:item.quantity, image:item.product.image })) }
       }
     });
 
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      line_items: items.map(item => ({
+      line_items: items.map((item: { product: { id: string; name: string; price: number; image: string | null }; quantity: number }) => ({
         price_data: { currency: "eur", product_data: { name: item.product.name }, unit_amount: item.product.price },
         quantity: item.quantity
       })),
