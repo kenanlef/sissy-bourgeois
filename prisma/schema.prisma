@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum DiscountType {
+  PERCENT
+  FIXED
+}
+
+model Product {
+  id            String      @id @default(cuid())
+  name          String
+  nameFr        String?
+  nameDe        String?
+  slug          String      @unique
+  description   String
+  descriptionFr String?
+  descriptionDe String?
+  price         Int
+  compareAt     Int?
+  category      String
+  color         String
+  image         String
+  images        String      @default("")
+  featured      Boolean     @default(false)
+  active        Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  orderItems    OrderItem[]
+}
+
+model Order {
+  id                    String      @id @default(cuid())
+  email                 String
+  customerName          String?
+  phone                 String?
+  stripeSessionId       String?     @unique
+  stripePaymentIntentId String?
+  subtotal              Int
+  discount              Int         @default(0)
+  shipping              Int         @default(0)
+  total                 Int
+  discountCode          String?
+  status                OrderStatus @default(PENDING)
+  shippingName          String?
+  shippingLine1         String?
+  shippingLine2         String?
+  shippingCity          String?
+  shippingPostalCode    String?
+  shippingCountry       String?
+  billingLine1          String?
+  billingCity           String?
+  billingPostalCode     String?
+  billingCountry        String?
+  trackingNumber        String?
+  trackingUrl           String?
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+  items                 OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  name      String
+  price     Int
+  quantity  Int
+  image     String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model DiscountCode {
+  id          String       @id @default(cuid())
+  code        String       @unique
+  type        DiscountType @default(PERCENT)
+  value       Int
+  active      Boolean      @default(true)
+  expiresAt   DateTime?
+  usageLimit  Int?
+  usedCount   Int          @default(0)
+  minSubtotal Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model SiteAsset {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  image     String
+  alt       String?
+  updatedAt DateTime @updatedAt
+}
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  createdAt DateTime @default(now())
+}

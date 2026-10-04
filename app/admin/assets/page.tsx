@@ -1,0 +1,3 @@
+import Link from "next/link"; import {redirect} from "next/navigation"; import {prisma} from "@/lib/prisma"; import {isAdmin} from "@/lib/auth"; import {AssetManager} from "@/components/AssetManager";
+export const dynamic = "force-dynamic";
+export default async function Assets(){if(!(await isAdmin()))redirect("/admin/login");const assets=await prisma.siteAsset.findMany();return <main className="admin-shell"><div className="admin-nav"><strong>SISSY BOURGEOIS · SITE PHOTOS</strong><Link href="/admin">← Dashboard</Link></div><div className="admin-content"><h1>Site photos</h1><AssetManager initial={assets}/></div></main>}

@@ -1,0 +1,3 @@
+import Link from "next/link"; import {redirect} from "next/navigation"; import {prisma} from "@/lib/prisma"; import {isAdmin} from "@/lib/auth"; import {DiscountManager} from "@/components/DiscountManager";
+export const dynamic = "force-dynamic";
+export default async function Discounts(){if(!(await isAdmin()))redirect("/admin/login");const codes=await prisma.discountCode.findMany({orderBy:{createdAt:"desc"}});return <main className="admin-shell"><div className="admin-nav"><strong>SISSY BOURGEOIS · DISCOUNTS</strong><Link href="/admin">← Dashboard</Link></div><div className="admin-content"><h1>Discount codes</h1><DiscountManager initial={codes}/></div></main>}

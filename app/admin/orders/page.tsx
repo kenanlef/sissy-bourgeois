@@ -1,0 +1,3 @@
+import Link from "next/link"; import {redirect} from "next/navigation"; import {prisma} from "@/lib/prisma"; import {isAdmin} from "@/lib/auth"; import {formatMoney} from "@/lib/money"; import {OrderEditor} from "@/components/OrderEditor";
+export const dynamic = "force-dynamic";
+export default async function Orders(){if(!(await isAdmin()))redirect("/admin/login"); const orders=await prisma.order.findMany({orderBy:{createdAt:"desc"},include:{items:true}}); return <main className="admin-shell"><div className="admin-nav"><strong>SISSY BOURGEOIS · ORDERS</strong><Link href="/admin">← Dashboard</Link></div><div className="admin-content"><h1>Orders</h1>{orders.map(o=><OrderEditor key={o.id} order={o} money={formatMoney(o.total)}/>)}</div></main>}

@@ -1,0 +1,29 @@
+SISSY BOURGEOIS V2.1
+
+Visual:
+- Header logo uses contain sizing so the logo is no longer cropped.
+- Shopping cart is a clear black cart icon; no BAG label.
+- Product cards remain rectangular/portrait with rounded corners, translucent pastel backgrounds and soft shadows.
+- UI palette remains lilac, soft yellow and baby blue. Product colors/photos are not changed.
+- Search button is visible in the header.
+
+Languages:
+- EN / FR / DE.
+- Product name and description now have separate English, French and German fields.
+- Admin product editor can edit all three languages.
+
+Admin reliability:
+- Admin product pages are force-dynamic.
+- Product create/update/delete revalidates storefront/admin/product pages.
+- Product editor shows a saving/success message.
+
+Database update:
+After replacing the project, run:
+  npm install
+  copy .env.example .env   (only if .env does not already exist)
+  npx prisma generate
+  npx prisma db push
+  npm run db:seed
+  npm run dev
+
+Do not run npm audit fix --force during setup.
