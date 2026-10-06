@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/lib/auth";
@@ -69,10 +69,12 @@ export async function DELETE(request: Request) {
   if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const { id } = await request.json();
-    const deleted = await prisma.product.delete({ where: { id: String(id) } });
+    const deleted = await prisma.product.update({ where: { id: String(id) }, data: { active: false } });
     revalidatePath("/"); revalidatePath("/shop"); revalidatePath("/admin/products"); revalidatePath(`/product/${deleted.slug}`);
     return NextResponse.json({ ok: true });
   } catch (e) {
     return NextResponse.json({ error: e instanceof Error ? e.message : "Could not delete product." }, { status: 400 });
   }
 }
+
+

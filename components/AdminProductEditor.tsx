@@ -48,7 +48,7 @@ export function AdminProductEditor({product}:{product:Product}) {
       <div className="field wide"><label>English description</label><textarea value={form.description} onChange={e=>set("description",e.target.value)}/></div>
       <div className="field"><label>French description</label><textarea value={form.descriptionFr} onChange={e=>set("descriptionFr",e.target.value)}/></div>
       <div className="field"><label>German description</label><textarea value={form.descriptionDe} onChange={e=>set("descriptionDe",e.target.value)}/></div>
-      <div className="field"><label>Main photo URL</label><input value={form.image} onChange={e=>set("image",e.target.value)}/><input type="file" accept="image/*" onChange={e=>upload(e,"image")}/></div>
+      <div className="field"><label>Main photo</label><input type="file" accept="image/*" onChange={e=>upload(e,"image")}/>{form.image&&<img className="asset-preview" src={form.image} alt="Main product"/>}</div>
       <div className="field"><label>Other photo URLs (one per line)</label><textarea value={(form.images||"").replaceAll("|","\n")} onChange={e=>set("images",e.target.value.replaceAll("\n","|"))}/><input type="file" accept="image/*" multiple onChange={async e=>{for(const f of Array.from(e.target.files||[])){const fd=new FormData();fd.append("file",f);const r=await fetch("/api/admin/upload",{method:"POST",body:fd});const d=await r.json();if(r.ok)set("images",[...(form.images?form.images.split("|"):[]),d.url].filter(Boolean).join("|"));}}}/></div>
       <label className="check"><input type="checkbox" checked={form.featured} onChange={e=>set("featured",e.target.checked)}/> Featured</label>
       <label className="check"><input type="checkbox" checked={form.active} onChange={e=>set("active",e.target.checked)}/> Published</label>
@@ -56,3 +56,4 @@ export function AdminProductEditor({product}:{product:Product}) {
     </div>}
   </div>
 }
+
