@@ -43,7 +43,7 @@ export async function POST(request: Request) {
 
     const blob = await put(filename, file, {
   access: "public",
-  storeId: process.env.sissy_STORE_ID,
+  storeId: process.env.BLOB_STORE_ID,
 });
 
     return NextResponse.json({ url: blob.url });
