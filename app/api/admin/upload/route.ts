@@ -42,8 +42,9 @@ export async function POST(request: Request) {
       .toString("hex")}.${ext}`;
 
     const blob = await put(filename, file, {
-      access: "public",
-    });
+  access: "public",
+  storeId: process.env.sissy_STORE_ID,
+});
 
     return NextResponse.json({ url: blob.url });
   } catch (error) {
